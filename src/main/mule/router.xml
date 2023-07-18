@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="sys-e-counselling-main">
+        <http:listener path="/*" config-ref="sys-e-counselling-httpListenerConfig">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <ee:transform doc:name="apiStartTime &amp; initialPayload" doc:id="0c8a7abb-7c22-4480-91d0-ded7ffa053bf">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="apiStartTime"><![CDATA[%dw 2.0
+output application/dw
+---
+now()]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log initial payload" doc:id="acd48e96-2c3e-4978-8e63-dedbaa94aff4" message="#[payload]" />
+        <apikit:router config-ref="sys-e-counselling-config" />
+        <error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="put:\getCollegeSeat:application\json:sys-e-counselling-config">
+        <flow-ref doc:name="getCollegeSeats-put-Sub_Flow-Invoke" doc:id="05d3e377-1bbd-4758-aa79-7b4ca155548d" name="getCollegeSeats-put-Sub_Flow" />
+        <error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="post:\getCollegeCutoff:application\json:sys-e-counselling-config">
+        <flow-ref doc:name="getCollegeCutoff-Sub_Flow-Invoke" doc:id="e73306f6-aeac-4381-83f4-a6ef0a592590" name="getCollegeCutoff-Sub_Flow" />
+    </flow>
+    <flow name="post:\getCollegeSeat:application\json:sys-e-counselling-config">
+        <flow-ref doc:name="getCollegeSeats-post-Sub_Flow-Invoke" doc:id="8d6aa180-b0fd-4142-aead-de53c43dd5a8" name="getCollegeSeats-post-Sub_Flow" />
+    </flow>
+    <flow name="post:\getPerformanceDetails:application\json:sys-e-counselling-config">
+        <flow-ref doc:name="getStudentDetails-Sub_Flow-Invoke" doc:id="0193ae18-c35c-4ebc-9add-d1e472c88df0" name="getStudentDetails-Sub_Flow" />
+    </flow>
+    <flow name="get:\ping:sys-e-counselling-config" doc:id="fa101460-43d9-4ca2-90d3-93890b1e1435">
+        <flow-ref doc:name="healthCheckSub_Flow-Invoke" doc:id="e7ac0db7-fa22-46b0-b3cb-24f1c7c282ea" name="healthCheckSub_Flow" />
+    </flow>
+    <flow name="put:\getPerformanceDetails:application\json:sys-e-counselling-config">
+        <flow-ref doc:name="updateStudentDetails-Sub_Flow-Invoke" doc:id="25764851-0855-4229-9be5-345c2de9cad9" name="updateStudentDetails-Sub_Flow"/>
+    </flow>
+</mule>

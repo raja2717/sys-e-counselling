@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="getCollegeCutoff-Sub_Flow" doc:id="356d4a7f-9d90-4b18-a443-8dab6a821674" >
+		<db:select doc:name="collegeCutoff-data" doc:id="6b706759-7d7f-416b-a7b1-a833cf509d93" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT collegecutoff.collegeId,collegeName,branch,boardPercentage,generalRank,case when :category = 'SC' then scRank when :category = 'ST' then stRank when :category = 'OBC' then obcRank else 0 end as categoryRank from collegecutoff join college on college.collegeId = collegecutoff.collegeId where (collegecutoff.collegeId = :collegeIdPreference1 and branch = :branchPreference1) or (collegecutoff.collegeId = :collegeIdPreference2 and branch = :branchPreference2) or (collegecutoff.collegeId = :collegeIdPreference3 and branch = :branchPreference3)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'collegeIdPreference1': payload.studentPreference.collegeId[0],
+	'collegeIdPreference2': payload.studentPreference.collegeId[1],
+	'collegeIdPreference3': payload.studentPreference.collegeId[2],
+	'branchPreference1':  payload.studentPreference.branch[0],
+	'branchPreference2':  payload.studentPreference.branch[1],
+	'branchPreference3':  payload.studentPreference.branch[2],
+	'category': upper(payload.category)
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="college Cutoff payload structure" doc:id="623c4ce3-e268-4fe6-9726-99883a6f3e80" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="getCollegeSeats-post-Sub_Flow" doc:id="e34c704a-6a6c-4c4c-b2d9-38fb9cc0c295" >
+		<db:select doc:name="collegeSeats-data" doc:id="ff475c21-0fbb-471f-b4b9-7825c0f5f6ff" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT collegeseats.collegeId,collegeName,branch, generalSeats ,case when :category = 'SC' then scSeats when :category = 'ST' then stSeats when :category = 'OBC' then obcSeats else 0 end as categorySeats from collegeseats join college on college.collegeId = collegeseats.collegeId where collegeseats.collegeId = :collegeId and branch = :branch;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'collegeId': payload.collegeId,
+	'branch': payload.branch,
+	'category': upper(payload.category)
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="collegeSeats payload structure" doc:id="a8191e9e-b784-424e-8749-a5db26e1509e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="getCollegeSeats-put-Sub_Flow" doc:id="3ded456a-a74e-43eb-8c0d-bb4acd3f57a6" >
+		<db:update doc:name="Update CollegeSeats After Allotment" doc:id="f8806f37-eb70-4c5c-a328-640e2032bff3" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE collegeseats
+SET
+	scSeats = scSeats -
+		CASE :category
+			WHEN 'SC' THEN 1
+			ELSE 0
+		END,
+	stSeats = stSeats -
+		CASE :category
+			WHEN 'ST' THEN 1
+			ELSE 0
+		END,
+	obcSeats = obcSeats -
+		CASE :category
+			WHEN 'OBC' THEN 1
+			ELSE 0
+		END,
+	generalSeats = generalSeats -
+		CASE :category
+			WHEN 'General' THEN 1
+			ELSE 0
+			END
+WHERE collegeId = :collegeId AND branch = :branch]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'category': payload.category,
+	'collegeId': payload.collegeId,
+	'branch': payload.branch
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="sucessfully updated message" doc:id="f941d4b2-8364-4977-a7d6-a69f5d94d13e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	msg: "successfully updated",
+	"affectedRows": payload.affectedRows
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="getStudentDetails-Sub_Flow" doc:id="6841d018-af40-48f5-9db4-acc1870fe9fd" >
+		<mongo:find-documents doc:name="student Performance Details" doc:id="a7ec98a1-3690-4e7c-9a34-1be0bb12b550" config-ref="MongoDB_Config" collectionName="students" fields=",">
+			<mongo:query><![CDATA[#[output application/json
+---
+{
+"studentDetails.registerationId" : payload.registerationId
+}]]]></mongo:query>
+		</mongo:find-documents>
+		<ee:transform doc:name="studentDetail Response" doc:id="317212aa-134b-4021-8220-137c28d57bea">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ($) - '_id']]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="updateStudentDetails-Sub_Flow" doc:id="2ca12634-9083-4e6d-a337-b8a7db936765" >
+		<mongo:update-documents doc:name="Update documents" doc:id="576f9f5c-8ac3-4b32-a303-be2ba7cf858e" config-ref="MongoDB_Config" collectionName="students">
+			<mongo:query ><![CDATA[#[output application/json
+---
+{
+"studentDetails.registerationId" : payload.registerationId
+}]]]></mongo:query>
+			<mongo:content-to-update ><![CDATA[#[{
+	"studentDetails.collegeAllotment.status": payload.status,
+	"studentDetails.collegeAllotment.collegeDetail" : payload.collegeDetailPayload
+}]]]></mongo:content-to-update>
+		</mongo:update-documents>
+	</sub-flow>
+</mule>

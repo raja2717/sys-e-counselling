@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="globalError_Handler" doc:id="1cf5fc74-0cc0-4f5b-8ccd-a8d41b3c5a6b" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4415e37e-08c2-48b9-977c-b85993d04bdd" type="DB:CONNECTIVITY">
+			<ee:transform doc:name="Error Response Status" doc:id="153792c3-ef54-4f32-b5b6-69a866f92c53">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+import dwl_common_modules::commonUtils
+output application/json
+---
+commonUtils::buildResponseStatus(server.host,vars.apiStartTime,"500",error.detailedDescription)]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="74893e10-d8ac-44a1-99fa-884f8828dfde" type="MONGO:PERMISSIONS_DENIED">
+			<ee:transform doc:name="Error Response status" doc:id="947aa5c1-a0b4-4aa0-994e-f0475f8146e0" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+import dwl_common_modules::commonUtils
+output application/json
+---
+commonUtils::buildResponseStatus(server.host,vars.apiStartTime,"403",error.detailedDescription)]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a2cfd63d-0954-476d-8b0a-ef495e17b06c" type="MONGO:TIMEOUT">
+			<ee:transform doc:name="Error Response Status" doc:id="307fdb52-8819-4462-9ea1-81251cc75d4f" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+import dwl_common_modules::commonUtils
+output application/json
+---
+commonUtils::buildResponseStatus(server.host,vars.apiStartTime,"408",error.detailedDescription)]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1b817c24-85f4-4279-8e96-128a84907e12" type="ANY">
+			<ee:transform doc:name="Error ResponseStatus" doc:id="8eb49ede-f781-45f0-9ea5-70b0fca1a95b" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+import dwl_common_modules::commonUtils
+output application/json
+---
+commonUtils::buildResponseStatus(server.host,vars.apiStartTime,"500",error.detailedDescription)]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+</mule>

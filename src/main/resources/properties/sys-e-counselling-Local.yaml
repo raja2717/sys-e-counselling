@@ -1,0 +1,35 @@
+https:
+  port: "8082"
+  readTimeout: "30000"
+HTTPListener:
+  port: "8082"
+  TLS:
+    key_store_configuration:
+      key_store:
+        key_password: "![hRY28R7GMmu61gSpeZ4v9A==]"
+        password: "![hRY28R7GMmu61gSpeZ4v9A==]"
+database:
+   host: "e-counselling.c0ctjizklqgm.eu-north-1.rds.amazonaws.com"
+   port: "3306"
+   user:
+      userId: "![HnRVTS/T81Y60gPMfaYbtg==]"
+      password: "![h+kdh6MIIojTsgeJ2BKkjKKd279oNDnDGtcb/5hpBJ0=]"
+   databaseName: "ecounselling1"
+ 
+mongodb:
+  atlas:
+    secondaryHost1: "ac-5ffqi5c-shard-00-00.sr052tw.mongodb.net"
+    primaryHost: "ac-5ffqi5c-shard-00-01.sr052tw.mongodb.net"
+    secondaryHost2: "ac-5ffqi5c-shard-00-02.sr052tw.mongodb.net"
+    port: "27017"
+    replicaSet: "atlas-j5ircc-shard-0"
+    authenticationSource: "admin"
+  databaseName: "studentDB"
+  collectionName: "students"
+  user:
+    userId: "![72K3Oyw1x2BxChfLm0o9QQ==]"
+    password: "![72K3Oyw1x2BxChfLm0o9QQ==]"
+APIManager:
+  apiId: "18800410"
+api:
+  version: "1.0.0"
