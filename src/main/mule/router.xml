@@ -40,6 +40,9 @@ now()]]></ee:set-variable>
         <flow-ref doc:name="healthCheckSub_Flow-Invoke" doc:id="e7ac0db7-fa22-46b0-b3cb-24f1c7c282ea" name="healthCheckSub_Flow" />
     </flow>
     <flow name="put:\getPerformanceDetails:application\json:sys-e-counselling-config">
-        <flow-ref doc:name="updateStudentDetails-Sub_Flow-Invoke" doc:id="25764851-0855-4229-9be5-345c2de9cad9" name="updateStudentDetails-Sub_Flow"/>
+        <flow-ref doc:name="updateStudentDetails-Sub_Flow-Invoke" doc:id="25764851-0855-4229-9be5-345c2de9cad9" name="updateStudentDetails-Sub_Flow" />
+    </flow>
+    <flow name="get:\getCollegeList:sys-e-counselling-config">
+        <flow-ref doc:name="getCollegeList-Sub_Flow-Invoke" doc:id="e938602f-f811-4d1d-bc3b-48f8aab128ef" name="getCollegeList-Sub_Flow"/>
     </flow>
 </mule>

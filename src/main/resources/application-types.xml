@@ -19,6 +19,20 @@ type auto_e34c704a_6a6c_4c4c_b2d9_38fb9cc0c295_Output_Attributes = Null
 
 ]]></types:shape>
     </types:type>
+    <types:type name="getCollegeListOutputMetadata" format="json">
+      <types:shape format="weave" example="examples/getCollegeListOutput.json"><![CDATA[%dw 2.0
+
+type getCollegeListOutputMetadata = Array<{|  collegeName: String,   generalSeats: Number {"typeId": "int"},   obcSeats: Number {"typeId": "int"},   collegeId: Number {"typeId": "int"},   stRank: Number {"typeId": "int"},   scRank: Number {"typeId": "int"},   generalRank: Number {"typeId": "int"},   obcRank: Number {"typeId": "int"},   branch: String,   boardPercentage: Number {"typeId": "double"},   scSeats: Number {"typeId": "int"},   stSeats: Number {"typeId": "int"}|}> {"example": "[{\\\"collegeName\\\":\\\"IIT Delhi\\\",\\\"generalSeats\\\":20,\\\"obcSeats\\\":10,\\\"collegeId\\\":1,\\\"stRank\\\":1000,\\\"scRank\\\":2000,\\\"generalRank\\\":5000,\\\"obcRank\\\":3000,\\\"branch\\\":\\\"CS\\\",\\\"boardPercentage\\\":70.0,\\\"scSeats\\\":6,\\\"stSeats\\\":10},{\\\"collegeName\\\":\\\"IIT Delhi\\\",\\\"generalSeats\\\":20,\\\"obcSeats\\\":12,\\\"collegeId\\\":1,\\\"stRank\\\":2000,\\\"scRank\\\":3500,\\\"generalRank\\\":10000,\\\"obcRank\\\":7000,\\\"branch\\\":\\\"IT\\\",\\\"boardPercentage\\\":70.0,\\\"scSeats\\\":10,\\\"stSeats\\\":12},{\\\"collegeName\\\":\\\"IIT Delhi\\\",\\\"generalSeats\\\":29,\\\"obcSeats\\\":12,\\\"collegeId\\\":1,\\\"stRank\\\":2000,\\\"scRank\\\":2400,\\\"generalRank\\\":12000,\\\"obcRank\\\":8000,\\\"branch\\\":\\\"ECE\\\",\\\"boardPercentage\\\":70.0,\\\"scSeats\\\":9,\\\"stSeats\\\":11},{\\\"collegeName\\\":\\\"MNIT Jaipur\\\",\\\"generalSeats\\\":20,\\\"obcSeats\\\":15,\\\"collegeId\\\":2,\\\"stRank\\\":1500,\\\"scRank\\\":2500,\\\"generalRank\\\":10000,\\\"obcRank\\\":4000,\\\"branch\\\":\\\"CS\\\",\\\"boardPercentage\\\":75.0,\\\"scSeats\\\":10,\\\"stSeats\\\":12},{\\\"collegeName\\\":\\\"MNIT Jaipur\\\",\\\"generalSeats\\\":26,\\\"obcSeats\\\":15,\\\"collegeId\\\":2,\\\"stRank\\\":2000,\\\"scRank\\\":3000,\\\"generalRank\\\":15000,\\\"obcRank\\\":6000,\\\"branch\\\":\\\"IT\\\",\\\"boardPercentage\\\":75.0,\\\"scSeats\\\":7,\\\"stSeats\\\":10},{\\\"collegeName\\\":\\\"MNIT Jaipur\\\",\\\"generalSeats\\\":19,\\\"obcSeats\\\":19,\\\"collegeId\\\":2,\\\"stRank\\\":2200,\\\"scRank\\\":3200,\\\"generalRank\\\":11000,\\\"obcRank\\\":6500,\\\"branch\\\":\\\"ECE\\\",\\\"boardPercentage\\\":75.0,\\\"scSeats\\\":7,\\\"stSeats\\\":18},{\\\"collegeName\\\":\\\"BIT sindri\\\",\\\"generalSeats\\\":23,\\\"obcSeats\\\":9,\\\"collegeId\\\":3,\\\"stRank\\\":2000,\\\"scRank\\\":1500,\\\"generalRank\\\":12000,\\\"obcRank\\\":4000,\\\"branch\\\":\\\"CS\\\",\\\"boardPercentage\\\":80.0,\\\"scSeats\\\":13,\\\"stSeats\\\":10},{\\\"collegeName\\\":\\\"BIT sindri\\\",\\\"generalSeats\\\":18,\\\"obcSeats\\\":12,\\\"collegeId\\\":3,\\\"stRank\\\":2100,\\\"scRank\\\":1700,\\\"generalRank\\\":14000,\\\"obcRank\\\":4500,\\\"branch\\\":\\\"IT\\\",\\\"boardPercentage\\\":80.0,\\\"scSeats\\\":8,\\\"stSeats\\\":10},{\\\"collegeName\\\":\\\"BIT sindri\\\",\\\"generalSeats\\\":19,\\\"obcSeats\\\":11,\\\"collegeId\\\":3,\\\"stRank\\\":2400,\\\"scRank\\\":2000,\\\"generalRank\\\":15000,\\\"obcRank\\\":5000,\\\"branch\\\":\\\"ECE\\\",\\\"boardPercentage\\\":80.0,\\\"scSeats\\\":9,\\\"stSeats\\\":8}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="getCollegeList-ResponseTransformationMetadata" format="json">
+      <types:shape format="weave" example="examples/collegeListResponseTransformationmetadata.json"><![CDATA[%dw 2.0
+
+type getCollegeList_ResponseTransformationMetadata = Array<{|  collegeId: Number {"typeId": "int"},   collegeName: String,   branches: {|    CS: {|      generalSeats: Number {"typeId": "int"},       obcSeats: Number {"typeId": "int"},       stRank: Number {"typeId": "int"},       scRank: Number {"typeId": "int"},       generalRank: Number {"typeId": "int"},       obcRank: Number {"typeId": "int"},       boardPercentage: Number {"typeId": "double"},       scSeats: Number {"typeId": "int"},       stSeats: Number {"typeId": "int"}    |},     IT: {|      generalSeats: Number {"typeId": "int"},       obcSeats: Number {"typeId": "int"},       stRank: Number {"typeId": "int"},       scRank: Number {"typeId": "int"},       generalRank: Number {"typeId": "int"},       obcRank: Number {"typeId": "int"},       boardPercentage: Number {"typeId": "double"},       scSeats: Number {"typeId": "int"},       stSeats: Number {"typeId": "int"}    |},     ECE: {|      generalSeats: Number {"typeId": "int"},       obcSeats: Number {"typeId": "int"},       stRank: Number {"typeId": "int"},       scRank: Number {"typeId": "int"},       generalRank: Number {"typeId": "int"},       obcRank: Number {"typeId": "int"},       boardPercentage: Number {"typeId": "double"},       scSeats: Number {"typeId": "int"},       stSeats: Number {"typeId": "int"}    |}  |}|}> {"example": "[{\\\"collegeId\\\":1,\\\"collegeName\\\":\\\"IIT Delhi\\\",\\\"branches\\\":{\\\"CS\\\":{\\\"generalSeats\\\":20,\\\"obcSeats\\\":10,\\\"stRank\\\":1000,\\\"scRank\\\":2000,\\\"generalRank\\\":5000,\\\"obcRank\\\":3000,\\\"boardPercentage\\\":70.0,\\\"scSeats\\\":6,\\\"stSeats\\\":10},\\\"IT\\\":{\\\"generalSeats\\\":20,\\\"obcSeats\\\":12,\\\"stRank\\\":2000,\\\"scRank\\\":3500,\\\"generalRank\\\":10000,\\\"obcRank\\\":7000,\\\"boardPercentage\\\":70.0,\\\"scSeats\\\":10,\\\"stSeats\\\":12},\\\"ECE\\\":{\\\"generalSeats\\\":29,\\\"obcSeats\\\":12,\\\"stRank\\\":2000,\\\"scRank\\\":2400,\\\"generalRank\\\":12000,\\\"obcRank\\\":8000,\\\"boardPercentage\\\":70.0,\\\"scSeats\\\":9,\\\"stSeats\\\":11}}}]"}
+
+]]></types:shape>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#e34c704a-6a6c-4c4c-b2d9-38fb9cc0c295">
     <types:processor-declaration>
@@ -31,4 +45,27 @@ type auto_e34c704a_6a6c_4c4c_b2d9_38fb9cc0c295_Output_Attributes = Null
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#0c8a7abb-7c22-4480-91d0-ded7ffa053bf"/>
+  <types:enrichment select="#5bfd374d-031a-4220-8fb0-e6713a7417ac">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="getCollegeListOutputMetadata"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="getCollegeList-ResponseTransformationMetadata"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#5ddf0190-e745-4bac-ac24-ef1f17db8561">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="getCollegeListOutputMetadata"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
 </types:mule>

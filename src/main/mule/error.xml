@@ -29,6 +29,9 @@ output application/json
 ---
 commonUtils::buildResponseStatus(server.host,vars.apiStartTime,"403",error.detailedDescription)]]></ee:set-payload>
 				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[403]]></ee:set-variable>
+				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a2cfd63d-0954-476d-8b0a-ef495e17b06c" type="MONGO:TIMEOUT">
@@ -40,6 +43,9 @@ output application/json
 ---
 commonUtils::buildResponseStatus(server.host,vars.apiStartTime,"408",error.detailedDescription)]]></ee:set-payload>
 				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[408]]></ee:set-variable>
+				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1b817c24-85f4-4279-8e96-128a84907e12" type="ANY">

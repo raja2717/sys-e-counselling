@@ -106,17 +106,48 @@ payload map ($) - '_id']]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</sub-flow>
+	<sub-flow name="getCollegeList-Sub_Flow" doc:id="5c27d580-876d-4065-bd65-52fbd28eeef8" >
+		<db:select doc:name="getCollegeList" doc:id="5ddf0190-e745-4bac-ac24-ef1f17db8561" config-ref="Database_Config">
+			<db:sql ><![CDATA[select college.collegeId,collegeName,collegecutoff.branch,boardPercentage,generalRank,scRank,stRank,obcRank,scSeats,stSeats,obcSeats,generalSeats from college , collegecutoff , collegeseats where college.collegeId = collegecutoff.collegeId and college.collegeId = collegeseats.collegeId and collegecutoff.branch = collegeseats.branch]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Output payload" doc:id="5bfd374d-031a-4220-8fb0-e6713a7417ac" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
 	<sub-flow name="updateStudentDetails-Sub_Flow" doc:id="2ca12634-9083-4e6d-a337-b8a7db936765" >
-		<mongo:update-documents doc:name="Update documents" doc:id="576f9f5c-8ac3-4b32-a303-be2ba7cf858e" config-ref="MongoDB_Config" collectionName="students">
-			<mongo:query ><![CDATA[#[output application/json
+		<choice doc:name="Choice for selection base update" doc:id="72faf38c-eae8-4124-a3ed-a950173f29be" >
+			<when expression="#[payload.allotmentId? and payload.collegeDetailPayload? and payload.date?]">
+				<mongo:update-documents doc:name="Add alloted college field" doc:id="576f9f5c-8ac3-4b32-a303-be2ba7cf858e" config-ref="MongoDB_Config" collectionName="students">
+			<mongo:query><![CDATA[#[output application/json
 ---
 {
 "studentDetails.registerationId" : payload.registerationId
 }]]]></mongo:query>
-			<mongo:content-to-update ><![CDATA[#[{
+			<mongo:content-to-update><![CDATA[#[{
 	"studentDetails.collegeAllotment.status": payload.status,
+	"studentDetails.collegeAllotment.allotmentId": payload.allotmentId,
+	"studentDetails.collegeAllotment.allotmentDate": payload.date,
 	"studentDetails.collegeAllotment.collegeDetail" : payload.collegeDetailPayload
 }]]]></mongo:content-to-update>
 		</mongo:update-documents>
+			</when>
+			<otherwise >
+				<mongo:update-documents collectionName="students" doc:name="Update status field only" doc:id="4a7edf35-6c4d-454c-83ca-f4c2e492eba3" config-ref="MongoDB_Config" >
+					<mongo:query ><![CDATA[#[output application/json
+---
+{
+"studentDetails.registerationId" : payload.registerationId
+}]]]></mongo:query>
+					<mongo:content-to-update ><![CDATA[#[{
+	"studentDetails.collegeAllotment.status": payload.status
+}]]]></mongo:content-to-update>
+				</mongo:update-documents>
+			</otherwise>
+		</choice>
 	</sub-flow>
 </mule>
